@@ -50,11 +50,13 @@ git config --global user.email "you@example.com"
 
 It symlinks the directories in this repo to where the tools expect to find them:
 
-| Repo path        | Linked to                |
-| ---------------- | ------------------------ |
-| `nvim/`          | `~/.config/nvim`         |
-| `ghostty/config` | `~/.config/ghostty/config` |
-| `tmux/tmux.conf` | `~/.tmux.conf` (only with `--tmux`) |
+| Repo path            | Linked to                                    |
+| -------------------- | -------------------------------------------- |
+| `nvim/`              | `~/.config/nvim`                             |
+| `ghostty/config`     | `~/.config/ghostty/config`                   |
+| `ghostty/themes/`    | `~/.config/ghostty/themes`                   |
+| `lazygit/config.yml` | `~/Library/Application Support/lazygit/`     |
+| `tmux/tmux.conf`     | `~/.tmux.conf` (only with `--tmux`)          |
 
 Everything is edited here, in the repo, and the live locations are only ever links. That is the
 whole trick to keeping several machines in sync.
@@ -68,15 +70,53 @@ that points at nothing.
 
 ```
 .
-├── bootstrap.sh        symlink installer
-├── Brewfile            every binary these configs assume exists
-├── ghostty/config      terminal: font and size
-├── nvim/               LazyVim configuration
-│   ├── lua/config/     options, keymaps, autocmds
-│   ├── lua/plugins/    added or overridden plugins
-│   └── lazy-lock.json  pinned plugin versions, committed
-└── tmux/tmux.conf      optional, see below
+├── bootstrap.sh                symlink installer
+├── Brewfile                    every binary these configs assume exists
+├── ghostty/
+│   ├── config                  font, padding, cursor, option key
+│   └── themes/oxocarbon-punch  generated terminal palette
+├── lazygit/config.yml          generated lazygit theme
+├── scripts/sync-theme.py       regenerates the two generated files
+├── nvim/
+│   ├── lua/palette.lua         THE COLOURS: single source of truth
+│   ├── lua/config/             options, keymaps, autocmds
+│   ├── lua/plugins/            added or overridden plugins
+│   └── lazy-lock.json          pinned plugin versions, committed
+└── tmux/tmux.conf              optional, see below
 ```
+
+## Theme
+
+Everything is themed on **Oxocarbon Punch**: oxocarbon's `#161616` ground with the IBM Carbon
+palette restructured for contrast. Functions are yellow and keywords red, so the two things you scan
+for are the brightest marks on screen; brackets, commas and operators are neutral grey, so colour
+only appears where it carries meaning.
+
+`nvim/lua/palette.lua` is the single source of truth. Neovim reads it directly. Ghostty and lazygit
+cannot read Lua, so they are generated:
+
+```bash
+./scripts/sync-theme.py          # regenerate after editing the palette
+./scripts/sync-theme.py --check  # exit 1 if they have drifted
+```
+
+| Surface | File | Source |
+| ------- | ---- | ------ |
+| Neovim syntax, icons, chrome | `nvim/lua/plugins/oxocarbon-punch.lua` | reads the palette |
+| Statusline | `nvim/lua/plugins/lualine.lua` | reads the palette |
+| Rainbow brackets | `nvim/lua/plugins/rainbow.lua` | reads the palette |
+| Ghostty | `ghostty/themes/oxocarbon-punch` | generated |
+| lazygit | `lazygit/config.yml` | generated |
+
+Nested brackets are coloured by depth through `rainbow-delimiters.nvim`, cycling the palette warm
+and cool alternately so adjacent levels never sit next to each other on the wheel. Since punctuation
+is grey everywhere else, these are the one place a bracket carries colour, and it means nesting
+depth rather than syntax.
+
+Transparency is off. To enable it, uncomment `background-opacity` and `background-blur` in
+`ghostty/config` and clear the `Normal`, `NormalNC`, `NormalFloat` and `SignColumn` backgrounds in
+`oxocarbon-punch.lua`. Doing only one of the two leaves a window that looks broken rather than
+translucent.
 
 ## Neovim
 
@@ -126,8 +166,13 @@ discoverable and there is no need to memorize this table up front.
 
 ## Ghostty
 
-Two lines: a Nerd Font and a size. The font matters, since file icons and status line glyphs render
-as blank boxes without one. `font-meslo-lg-nerd-font` in the Brewfile installs it.
+Font is `JetBrainsMono Nerd Font Mono`, installed by the Brewfile. A Nerd Font is required, not
+cosmetic: file icons and statusline glyphs render as blank boxes without one.
+
+`macos-option-as-alt = left` is deliberate. On the macOS German layout, Option is how you type
+`[ ] { } | \ @ ~`. Setting it to `true` hands both Option keys to the application as Alt and makes
+those characters untypable in the terminal. `left` gives you Alt for keybindings on the left Option
+while the right one still types punctuation.
 
 Splits and tabs use the standard macOS keys you already know, `cmd+d`, `cmd+shift+d`, `cmd+t`. List
 them all with `ghostty +list-keybinds`.

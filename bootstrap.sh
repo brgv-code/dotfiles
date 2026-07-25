@@ -47,6 +47,8 @@ link() {
 
 link nvim            .config/nvim
 link ghostty/config  .config/ghostty/config
+link ghostty/themes  .config/ghostty/themes
+link lazygit/config.yml "Library/Application Support/lazygit/config.yml"
 
 if [ "$WITH_TMUX" = true ]; then
   link tmux/tmux.conf .tmux.conf

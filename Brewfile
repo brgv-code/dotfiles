@@ -24,4 +24,4 @@ brew "stylua"
 
 # Terminal and font. Omit if you already have them, or use a different terminal.
 cask "ghostty"
-cask "font-meslo-lg-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
