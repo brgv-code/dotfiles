@@ -19,9 +19,6 @@ brew "bat"       # syntax highlighted previews
 # Formats the Lua in this repo
 brew "stylua"
 
-# Optional: sessions that outlive the terminal. See the README.
-# brew "tmux"
-
 # Terminal and font. Omit if you already have them, or use a different terminal.
 cask "ghostty"
 cask "font-jetbrains-mono-nerd-font"

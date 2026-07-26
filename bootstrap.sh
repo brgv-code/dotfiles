@@ -4,18 +4,15 @@
 # Safe to run repeatedly. Real files found in the way are backed up, never deleted.
 #
 # Usage:
-#   ./bootstrap.sh          link nvim and ghostty
-#   ./bootstrap.sh --tmux   also link tmux
+#   ./bootstrap.sh          link nvim, ghostty and lazygit
 #
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WITH_TMUX=false
 
 for arg in "$@"; do
   case "$arg" in
-    --tmux) WITH_TMUX=true ;;
-    -h|--help) sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown option: $arg" >&2; exit 1 ;;
   esac
 done
@@ -50,12 +47,11 @@ link ghostty/config  .config/ghostty/config
 link ghostty/themes  .config/ghostty/themes
 link lazygit/config.yml "Library/Application Support/lazygit/config.yml"
 
-if [ "$WITH_TMUX" = true ]; then
-  link tmux/tmux.conf .tmux.conf
-elif [ -L "$HOME/.tmux.conf" ] && [ "$(readlink "$HOME/.tmux.conf")" = "$DOTFILES/tmux/tmux.conf" ]; then
-  # Clear a link left behind by an earlier run that included tmux.
+# tmux is gone from this repo. Clear the dangling link an earlier run left behind,
+# so a machine that once used it does not keep a symlink pointing at nothing.
+if [ -L "$HOME/.tmux.conf" ] && [ "$(readlink "$HOME/.tmux.conf")" = "$DOTFILES/tmux/tmux.conf" ]; then
   rm "$HOME/.tmux.conf"
-  echo "unlink   .tmux.conf  (pass --tmux to keep it)"
+  echo "unlink   .tmux.conf  (tmux was removed from this repo)"
 fi
 
 echo

@@ -56,7 +56,6 @@ It symlinks the directories in this repo to where the tools expect to find them:
 | `ghostty/config`     | `~/.config/ghostty/config`                   |
 | `ghostty/themes/`    | `~/.config/ghostty/themes`                   |
 | `lazygit/config.yml` | `~/Library/Application Support/lazygit/`     |
-| `tmux/tmux.conf`     | `~/.tmux.conf` (only with `--tmux`)          |
 
 Everything is edited here, in the repo, and the live locations are only ever links. That is the
 whole trick to keeping several machines in sync.
@@ -77,12 +76,11 @@ that points at nothing.
 │   └── themes/oxocarbon-punch  generated terminal palette
 ├── lazygit/config.yml          generated lazygit theme
 ├── scripts/sync-theme.py       regenerates the two generated files
-├── nvim/
-│   ├── lua/palette.lua         THE COLOURS: single source of truth
-│   ├── lua/config/             options, keymaps, autocmds
-│   ├── lua/plugins/            added or overridden plugins
-│   └── lazy-lock.json          pinned plugin versions, committed
-└── tmux/tmux.conf              optional, see below
+└── nvim/
+    ├── lua/palette.lua         THE COLOURS: single source of truth
+    ├── lua/config/             options, keymaps, autocmds
+    ├── lua/plugins/            added or overridden plugins
+    └── lazy-lock.json          pinned plugin versions, committed
 ```
 
 ## Theme
@@ -125,7 +123,8 @@ translucent.
 treesitter parser, and formatter together and records the choice in `nvim/lazyvim.json`.
 
 Currently enabled: TypeScript, JSON, YAML, TOML, SQL, Python, Markdown, Docker, Astro, Tailwind,
-Git, and Copilot.
+and Git. No Copilot: the completion it offers assumes you are the one typing, and the agent does
+that work here.
 
 To change them, open `:LazyExtras` inside Neovim, toggle with `x`, and restart. Commit the resulting
 `lazyvim.json` and `lazy-lock.json`.
@@ -177,21 +176,19 @@ while the right one still types punctuation.
 Splits and tabs use the standard macOS keys you already know, `cmd+d`, `cmd+shift+d`, `cmd+t`. List
 them all with `ghostty +list-keybinds`.
 
-## On tmux
+## No tmux
 
-Not installed by default, on purpose.
+Removed, not merely optional.
 
-Ghostty already gives you splits, tabs, scrollback, search, and copy. Running tmux locally mostly
-means reimplementing those behind a prefix key, which is a second set of shortcuts to learn for
-things the terminal already did. The one thing it genuinely adds is sessions that survive the
-terminal closing, which matters in two cases:
+Ghostty gives you splits, tabs, scrollback, search, and copy. Running tmux locally meant
+reimplementing those behind a prefix key: a second set of shortcuts to learn for things the terminal
+already did, and a third party in every keybinding conflict. Dropping it removed a whole layer
+without losing a capability.
 
-- a long agent run you do not want to lose to an accidental `cmd+q`
-- SSH to a remote machine, where a dropped connection kills the work
-
-If either applies, uncomment tmux in the `Brewfile` and run `./bootstrap.sh --tmux`. The config in
-`tmux/tmux.conf` is small and plugin free: prefix on `C-a`, `|` and `-` to split, `h/j/k/l` to move,
-and `y` to yank in copy mode, which matches every tutorial you will read.
+The one thing it genuinely added is sessions that survive the terminal closing, which matters for a
+long agent run you do not want to lose to an accidental `cmd+q`, and for SSH where a dropped
+connection kills the work. Neither is a daily concern here. If you need it, `brew install tmux` and
+write a config; there is no reason for a stale one to sit in this repo.
 
 ## Reproducing on another machine
 
