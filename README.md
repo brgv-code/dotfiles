@@ -19,12 +19,12 @@ gh       ──  pull requests and auth
 On a clean machine:
 
 ```bash
-# 1. dependencies
-brew bundle --file=Brewfile
-
-# 2. clone and link
+# 1. clone
 git clone https://github.com/brgv-code/dotfiles ~/Development/dotfiles
 cd ~/Development/dotfiles
+
+# 2. dependencies and link
+brew bundle --file=Brewfile
 ./bootstrap.sh
 
 # 3. authenticate GitHub
