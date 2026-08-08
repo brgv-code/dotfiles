@@ -116,6 +116,12 @@ Transparency is off. To enable it, uncomment `background-opacity` and `backgroun
 `oxocarbon-punch.lua`. Doing only one of the two leaves a window that looks broken rather than
 translucent.
 
+lazygit pipes its diffs through [delta](https://github.com/dandavison/delta) (`git.paging` in the
+generated `config.yml`), so a review reads with real syntax highlighting instead of a flat red and
+green wall. It runs single column with `--paging=never`, which keeps lazygit's scrolling and its
+line-by-line staging (`Space` in the diff view) intact. delta is already in the `Brewfile`; nothing
+else to set up.
+
 ## Neovim
 
 [LazyVim](https://www.lazyvim.org) on top of lazy.nvim. Language support comes from LazyVim
