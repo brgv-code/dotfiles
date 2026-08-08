@@ -65,6 +65,13 @@ gui:
     defaultFgColor: ["{p['fg']}"]
     searchingActiveBorderColor: ["{p['orange']}"]
   authorColorDefault: "{p['purple']}"
+git:
+  paging:
+    # delta syntax-highlights the diff so review reads like the editor, not a
+    # flat red/green wall. --paging=never lets lazygit own scrolling; single
+    # column keeps line-by-line staging (Space in the diff view) working.
+    colorArg: always
+    pager: delta --dark --paging=never
 os:
   editPreset: "nvim"
 """
