@@ -49,10 +49,9 @@ link lazygit/config.yml "Library/Application Support/lazygit/config.yml"
 
 # tmux is gone from this repo. Clear the dangling link an earlier run left behind,
 # so a machine that once used it does not keep a symlink pointing at nothing.
-i<D-i>if [ -L "$HOME/.tmux.conf" ] && [ "$(readlink "$HOME/.tmux.conf")" = "$DOTFILES/tmux/tmux.conf" ]; then
+if [ -L "$HOME/.tmux.conf" ] && [ "$(readlink "$HOME/.tmux.conf")" = "$DOTFILES/tmux/tmux.conf" ]; then
   rm "$HOME/.tmux.conf"
   echo "unlink   .tmux.conf  (tmux was removed from this repo)"
 fi
 
-cCuuuuasdsECHO
-KKJJJJJHJKIIIECHO "DONE. OPEN NVIM AND LET LAZY.NVIM INSTALL PLUGINS."
+echo "Done. Open nvim and let lazy.nvim install plugins."
